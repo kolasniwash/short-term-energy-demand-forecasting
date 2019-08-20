@@ -1,6 +1,10 @@
 # day-ahead-load-forecasting
 Final project repo for the AkademyAi bootcamp. Investigates various models to predict hourly day ahead forecasts in the Spanish energy market.
 
+## Problem Definition
+In order to appropriately meet energy demands on a 24 hour basis Transmission Service Operators make forecasts for the maximum power expected over the coming 24 hour period. These forecasts are used in the planning of supply dispatch and for day-ahead bidding processes. Errors in prediction can be costly. Considering a levelized cost of energy of EUR50/MWh and an average difference in forecast to observed consumption of ~200MW. The daily value of the error is EUR 240,000. An improvement in forecasting that reduces error by 2% represents a potential annual cost reduction of EUR 1.5M. Similar examples can also be made for predicting load forecasts from solar, wind, battery storage, and other intermittent energy sources. 
+
+
 ## Task Identification
 
 1. Data Cleaning/Preprocessing
@@ -46,3 +50,5 @@ Final project repo for the AkademyAi bootcamp. Investigates various models to pr
 	4.2 Optimize learning rate in models (tensorflow callback method)
 	4.3 Plot errors distributions
 	4.4 Add date and weather features and reevaluate the models. 
+
+## Model Explanations
