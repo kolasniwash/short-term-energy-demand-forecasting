@@ -11,14 +11,17 @@ Errors in prediction can be costly. Considering a levelized cost of energy of EU
 
 ### 1. Data Cleaning/Preprocessing
  
-- [ ] Retreve data from public sources
-  - [ ] Energy load data: entose Transparency Platform
-  - [ ] Calendar data: Pandas library
-  - [ ] Weather Data: ???
+- [X] Retreve data from public sources
+  - [x] Energy load data: entose Transparency Platform
+  - [ ] (optional) Calendar data: Pandas library
+  - [ ] (optional) Weather Data: **Need a source**
 - [ ] Clean data
-  - [ ] Parse dates into datetime
-  - [ ] Evaluate quantitiy of nans and imputer if possible
+  - [x] Parse dates into datetime
+  - [ ] Evaluate quantitiy of nans and impute missing if possible
+  - [ ] Elimate duplicated values
 - [ ] Process energy load  data into feature vectors
+  - [ ] 'Univariate' Day In, and predict Day + 1
+  - [ ] 'Multivariate' In: Day, Day-1, Day-2, Day-7, and predict Day + 1
 - [ ] (optional) Process Dates data into dummy variables
 - [ ] (optional) Clean weather data and preprocess into feature vectors with load and date data.
 
@@ -30,28 +33,31 @@ Errors in prediction can be costly. Considering a levelized cost of energy of EU
 - [ ] (Auto)Correlation analysis of energy data with target vector.
   - [ ] Identify autocorrelated time step features for the multivariate case.
 - [ ] Correlation analysis of date and weather data with the target vector.
-  - [ ] Identify correlated weather features with high correlation.
+  - [ ] Identify correlated date and weather features with high correlation.
 
 ### 3. Model Building
-- [ ] Naive forecast model (multi- input, multi-output)
+- [ ] Naive forecast models AKA test rigs
+  - [ ] Linear naive model
+  - [ ] Standard ML models: regression, randomforest, etc.
   - [ ] Single layer of 24 perceptrons, one per output hour of the day.
-  - [ ] Single input of time t-1 predicting time t.
-- [ ] MLP forecast model
-  - [ ] Hidden layer of 128 perceptrons, output layer of 24 perceptrons
-  - [ ] Two test cases:
-    - [ ] Single day's worth of data input (24 hours of data), with 24 data point output.
-	- [ ] Mutliple day's worth of data input (i.e. 5 X 24 hours data), with 24 data point output.
-- [ ] CNN forecast model
-    - [ ] Naive forecast variant t-1 --> t
-    - [ ] Multi day input forecast variant t-1, t-2, t-3, t-7, t-30 --> t
-- [ ] LSTM forecast model
-    - [ ] Naive forecast variant t-1 --> t
-    - [ ] Multi day input forecast variant t-1, t-2, t-3, t-7, t-30 --> t
+  - [ ] CNN
+  - [ ] LSTM
+- [ ] Univariate 
+  - [ ] Moving averages, ARIMA
+  - [ ] Multi layer perceptron
+  - [ ] CNN
+  - [ ] LSTM
+- [ ] Multivariate
+  - [ ] Moving averages, SARIMA
+  - [ ] Multi layer perceptron
+  - [ ] CNN
+  - [ ] LSTM
 
-### 4. Model Evaluation
+### 4. Model Improvement
+- [ ] Learning rate optimization (tensorflow callback method)
+- [ ] (optional) Add dates features
+- [ ] (optional) Add weather features
+
+### 5. Model Evaluation 
 - [ ] Record inital model results - build table for model result tracking. 
-- [ ] Optimize learning rate in models (tensorflow callback method)
 - [ ] Plot errors distributions
-- [ ] Add date and weather features and reevaluate the models. 
-
-## Model Explanations
