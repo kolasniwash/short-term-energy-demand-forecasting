@@ -19,9 +19,9 @@ Errors in prediction can be costly. Considering a levelized cost of energy of EU
   - [x] Parse dates into datetime
   - [x] Evaluate quantitiy of nans and impute missing if possible
   - [x] Elimate duplicated values
-- [ ] Process energy load  data into feature vectors
-  - [ ] 'Univariate' Day In, and predict Day + 1
-  - [ ] 'Multivariate' In: Day, Day-1, Day-2, Day-7, and predict Day + 1
+- [x] Process energy load  data into feature vectors
+  - [x] 'Univariate' Day In, and predict Day + 1
+  - [x] 'Multivariate' In: Day, Day-1, Day-2, Day-7, and predict Day + 1
 - [ ] (optional) Process Dates data into dummy variables
 - [ ] (optional) Clean weather data and preprocess into feature vectors with load and date data.
 
