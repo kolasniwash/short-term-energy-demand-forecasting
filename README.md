@@ -15,7 +15,7 @@ Errors in prediction can be costly. Considering a levelized cost of energy of EU
   - [x] Energy load data: entose Transparency Platform
   - [ ] (optional) Calendar data: Pandas library
   - [ ] (optional) Weather Data: **Need a source**
-- [ ] Clean data
+- [x] Clean data
   - [x] Parse dates into datetime
   - [x] Evaluate quantitiy of nans and impute missing if possible
   - [x] Elimate duplicated values
