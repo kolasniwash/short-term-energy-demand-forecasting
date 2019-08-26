@@ -1,0 +1,3 @@
+# Don't track the content of these folders
+
+data/weather/
