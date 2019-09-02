@@ -100,27 +100,8 @@
 #     - Helper function used in make_shifted_features. Labels the columns of the shifted dataframes with an appropriate label indicating the shift value.
 # 
 
-# In[1]:
-
-
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-get_ipython().run_line_magic('matplotlib', 'inline')
-
-
-# In[3]:
-
-
-#read in the dataframe
-data = pd.read_csv('./data/cleaned_data/load_forecast_2016_2018.csv', parse_dates=True, index_col='time')
-
-
-# #### Window transforms
-# 
-# Desribe function here
-
-# In[4]:
 
 
 #a function to transform
@@ -153,15 +134,6 @@ def transform_to_windows(data, load_type='actual_load'):
     return data
 
 
-# In[5]:
-
-
-loads = transform_to_windows(data)
-loads.head()
-
-
-# In[6]:
-
 
 #define a helper function to plot the indivdual hours
 def plot_hour(data, hour):
@@ -175,21 +147,6 @@ def plot_hour(data, hour):
     plt.plot(series.index, series.values)
 
 
-# In[7]:
-
-
-#preview of the actual load readings over two years at midnight.
-plot_hour(loads, 0)
-
-
-# In[8]:
-
-
-#preview of the actual load readings over two years at midday.
-plot_hour(loads, 12)
-
-
-# In[9]:
 
 
 def shift_by_days(data, num_days):
@@ -203,22 +160,6 @@ def shift_by_days(data, num_days):
     
     return data_shifted
     
-    
-
-
-# In[10]:
-
-
-# example of how data is shifted
-loads_shifted_3_days = shift_by_days(loads, 3)
-loads_shifted_3_days.head()
-
-
-# #### Construct features
-# 
-# Descrption of the features.
-
-# In[11]:
 
 
 def make_shifted_features(data, shifts_list):
@@ -248,7 +189,6 @@ def make_shifted_features(data, shifts_list):
     return data
 
 
-# In[12]:
 
 
 def rename_cols(data, shift):
@@ -268,8 +208,6 @@ def rename_cols(data, shift):
     return data
 
 
-# In[13]:
-
 
 def trim_length(data, shifts_list):
     
@@ -277,36 +215,4 @@ def trim_length(data, shifts_list):
     
     return data.iloc[start_point:,:]
 
-
-# In[14]:
-
-
-#example of shifting data by 1, 2, 3, 7, 14, 30 days
-shifts_list = [1, 2, 3, 7, 14, 30]
-
-load_features = make_shifted_features(loads, shifts_list)
-
-load_features
-
-
-# In[132]:
-
-
-#check dataframe size
-# 6 additional features plus the original = 24*7 = 168 expected columns
-# maximum shift is 30 so expected length is 1096-30= 1066
-load_features.shape
-
-
-# In[135]:
-
-
-#look at last elements in dataframe to be sure it worked
-load_features.tail()
-
-
-# In[15]:
-
-
-load_features.to_csv('./data/processed/transformed_2016_2018.csv')
 
