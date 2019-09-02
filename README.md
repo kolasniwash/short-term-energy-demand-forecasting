@@ -7,14 +7,18 @@ In order to appropriately meet energy demands on a 24 hour basis Transmission Se
 Errors in prediction can be costly. Considering a levelized cost of energy of EUR50/MWh and an average difference in forecast to observed consumption of ~200MW. The daily value of the error is EUR 240,000. An improvement in forecasting that reduces error by 2% represents a potential annual cost reduction of EUR 1.5M. Similar examples can also be made for predicting load forecasts from solar, wind, battery storage, and other intermittent energy sources. 
 
 
-## Task Identification
+## Task Completed
+
+### 0. Problem Definition
+- [x] Forecast target
+- [x] Data Structure inputs and outputs
 
 ### 1. Data Cleaning/Preprocessing
  
 - [X] Retreve data from public sources
   - [x] Energy load data: entose Transparency Platform
-  - [ ] (optional) Calendar data: Pandas library
-  - [ ] (optional) Weather Data: **Need a source**
+  - [x] (optional) Calendar data: Pandas library
+  - [x] (optional) Weather Data: OpenWeatherApi
 - [x] Clean data
   - [x] Parse dates into datetime
   - [x] Evaluate quantitiy of nans and impute missing if possible
@@ -25,39 +29,50 @@ Errors in prediction can be costly. Considering a levelized cost of energy of EU
 - [ ] (optional) Process Dates data into dummy variables
 - [ ] (optional) Clean weather data and preprocess into feature vectors with load and date data.
 
-### 2. Data Analysis
-- [ ] Statistical analysis of processed data in Task set #1
-  - [ ] General descrption and investigation of the data's structure.
-  - [ ] Is data stationary?
-  - [ ] What are distributions of day head forecasts, actual loads, dates
+### 2. Dataset Analysis
+- [x] Statistical analysis of processed data in Task set #1
+  - [x] General descrption and investigation of the data's structure.
+  - [x] Is data stationary?
+  - [x] What are distributions of day head forecasts, actual loads, dates
 - [ ] (Auto)Correlation analysis of energy data with target vector.
   - [ ] Identify autocorrelated time step features for the multivariate case.
 - [ ] Correlation analysis of date and weather data with the target vector.
   - [ ] Identify correlated date and weather features with high correlation.
 
-### 3. Model Building
-- [ ] Naive forecast models AKA test rigs
-  - [ ] Linear naive model
-  - [ ] Standard ML models: regression, randomforest, etc.
-  - [ ] Single layer of 24 perceptrons, one per output hour of the day.
-  - [ ] CNN
-  - [ ] LSTM
-- [ ] Univariate 
-  - [ ] Moving averages, ARIMA
-  - [ ] Multi layer perceptron
-  - [ ] CNN
-  - [ ] LSTM
-- [ ] Multivariate
-  - [ ] Moving averages, SARIMA
-  - [ ] Multi layer perceptron
-  - [ ] CNN
-  - [ ] LSTM
+### 3. Data Transforms
+- [x] Utility to join csvs into single df, clean, interpolate nans
+- [x] Utility to transform Day>Hour format to Day>Day format (columns hours)
+- [x] Utility to add labels to transformed columns and autoregressive windows
 
-### 4. Model Improvement
-- [ ] Learning rate optimization (tensorflow callback method)
-- [ ] (optional) Add dates features
-- [ ] (optional) Add weather features
+### 4. Multistp Model Building
+- [ ] Baseline Forecast Models
+  - [x] Previous Day By Day
+  - [ ] Year ago day-by-day
+- [ ] Classic Forecast models
+  - [ ] ARIMA Hour-by-hour
+    - [ ] Box Jeknens Method for parameter discovery
+    - [ ] Grid search around parameters
+- [ ] Neural Network (paper model implementation)
+  - [ ] CNN / LSTM / MLP
+- [ ] Error Evaluation
+  - [ ] Error plots
 
-### 5. Model Evaluation 
-- [ ] Record inital model results - build table for model result tracking. 
-- [ ] Plot errors distributions
+### 5. Model Improvement (Optional Ideas)
+- [ ] Hyperparmeter Tuning
+  - [ ] Learning rate optimization (tensorflow callback method)
+- [ ] Multivariate mutli step models
+  - [ ] Add weather/dates features
+    - [ ] ARIMA (w/ exod vars)
+    - [ ] CNN / LSTM / MLP
+  - [ ] Multi headed model
+- [ ] Feature engineering
+  - [ ] Autoregressive analysis of features.
+  - [ ] Clustering of weather features
+  
+### 6. Possible Pivots
+- [ ] Compare two NN models instead of ARIMA
+- [ ] Compare ARIMA vs SARIMA, ARIMAX, SARIMAX
+- [ ] Skip ARIMA, build multivariate multi step directly (ie. using day and weather data)
+- [ ] Swap energy demand data for Solar data: forecast solar generation
+  - [ ] Option 1 Model comparisons
+  - [ ] Option 2 Use mutliple input variables, one model
