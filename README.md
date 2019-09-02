@@ -1,4 +1,4 @@
-# day-ahead-load-forecasting
+# Short-term-energy-demand-forecasting
 Final project repo for the AkademyAi bootcamp. Investigates various models to predict hourly day ahead forecasts in the Spanish energy market.
 
 ## Problem Definition
