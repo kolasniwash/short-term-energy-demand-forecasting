@@ -105,7 +105,7 @@ def train_test_split(data, split_date='2017-12-31'):
 
 
 
-def walk_forward_evaluation(model, train, test, model_name):
+def walk_forward_evaluation(model, train, test, model_name, config=(1,0,0)):
     """
     Walk forward test harness. Adapted from Machine Learning Mastery by Jason Brownlee.
     
@@ -114,14 +114,14 @@ def walk_forward_evaluation(model, train, test, model_name):
     #define the walk forward window. In this case an expanding window for simplicity.
     history = train.copy()
 
-    
+    #defne array for the walk forward predicted values (forecasts)
     predictions = []
     
     #loop through each row in test from i to length of i
     for i in range(test.shape[0]):
         
         #get forecasted values from the model
-        Y_hat = model(history)
+        Y_hat = model(history, config)
         
         #store predictions
         predictions.append(Y_hat)
@@ -134,7 +134,7 @@ def walk_forward_evaluation(model, train, test, model_name):
     
     errors, error_mean = calculate_errors(predictions, test, model_name)
     
-    return errors, error_mean
+    return errors, error_mean, predictions
 
 
 # ##### 4. Calculating forecast errors
@@ -216,7 +216,7 @@ def plot_error(errors, result_set=[], title=''):
 # ##### Define previous day persistence model
 
 
-def day_hbh_persistence(history, days=1):
+def day_hbh_persistence(history, config, days=1):
     """
     History is a dataframe with index as days, and columns hours in the day. 
     
@@ -225,7 +225,7 @@ def day_hbh_persistence(history, days=1):
     return history.iloc[-days,:]
 
 
-def ma_persistence(history, window=3):
+def ma_persistence(history, config, window=3):
     """
     History is a dataframe with index as days, and columns hours in the day. 
 
@@ -255,7 +255,7 @@ def ma_persistence(history, window=3):
 # In[189]:
 
 
-def same_day_oya_persistence(history):
+def same_day_oya_persistence(history, config):
     """
     History is a dataframe with index as days, and columns hours in the day. 
     
@@ -290,17 +290,22 @@ def persistence_forecasts(model_set = {'prev_day_persistence': day_hbh_persisten
 
     errors = []
     error_means = []
+    model_forecast = []
 
     for name, function in model_set.items():
 
-        errors_model, error_mean = walk_forward_evaluation(function, train, test, name)
+        errors_model, error_mean, predictions = walk_forward_evaluation(function, train, test, name)
 
+        #append the errors, and predictions. 
         errors.append(errors_model)
         error_means.append(error_mean)
+        model_forecast.append(predicitons)
 
+    print(predictions.shape)
+    print(predictions[:3])
     errors = pd.concat([error for error in errors], axis=1)
+    model_forecast = pd.concat([pred for pred in predictions], axis=1)
 
-    errors.head(3)
 
     plot_error(errors, result_set=list(model_set.keys()), title='Persistence Model Forecasts')
 
