@@ -147,20 +147,33 @@ def calculate_errors(Y_hat_test, Y_test, result_set):
     columns = [result_set]
     
     error_list = []
-    error_mean = []
     
     
-    #calculate the mse and mae for each hour in the Y_test and Prediction
+    #calculate the rmse for each hour in the Y_test and Prediction
     for i in range(Y_hat_test.shape[1]):
         error_list.append([
             #calcualte the RMSE
             np.sqrt(mean_squared_error(Y_hat_test.iloc[:,i], Y_test.iloc[:,i]))
         ])
 
-    #append average mean error of the predictions
-    error_mean.append([
-        np.mean(error_list[0])
-    ])    
+
+    #calculate the elemnet wise RMSE for the whole prediction set.
+    actual = Y_test.values
+    predicted = Y_hat_test.values
+
+    s=0
+    for row in range(actual.shape[0]):
+        for col in range(actual.shape[1]):
+            s += (actual[row, col] - predicted[row, col])**2
+    error_mean = sqrt(s / (actual.shape[0] * actual.shape[1]))
+
+
+
+
+    # #append average mean error of the predictions
+    # error_mean.append([
+    #     np.mean(error_list[0])
+    # ])    
     
     
     #set an index with the 24 periods
@@ -170,6 +183,10 @@ def calculate_errors(Y_hat_test, Y_test, result_set):
     errors = pd.DataFrame(error_list, index=index, columns=columns)
     
     return errors, error_mean
+
+######################################################################
+
+######################################################################
 
 
 # ##### 5. Plotting errors
@@ -292,6 +309,8 @@ def persistence_forecasts(model_set = {'prev_day_persistence': day_hbh_persisten
     error_means = []
     model_forecast = []
 
+
+    #run each model in model_set and store errors and predictions in dataframe
     for name, function in model_set.items():
 
         errors_model, error_mean, predictions = walk_forward_evaluation(function, train, test, name)
@@ -302,7 +321,7 @@ def persistence_forecasts(model_set = {'prev_day_persistence': day_hbh_persisten
         model_forecast.append(predicitons)
 
     print(predictions.shape)
-    print(predictions[:3])
+
     errors = pd.concat([error for error in errors], axis=1)
     model_forecast = pd.concat([pred for pred in predictions], axis=1)
 
