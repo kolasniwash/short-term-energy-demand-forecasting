@@ -129,12 +129,13 @@ def walk_forward_evaluation(model, train, test, model_name, config=(1,0,0)):
         #get real observation and append to the history for next step in walk forward.
         history.append(test.iloc[i,:])
     
+
     #store predictions in a dataframe
     predictions = pd.DataFrame(predictions, index = test.index, columns = test.columns)
     
-    errors, error_mean = calculate_errors(predictions, test, model_name)
+    error_mean, errors = calculate_errors(predictions, test, model_name)
     
-    return errors, error_mean, predictions
+    return error_mean, errors, predictions
 
 
 # ##### 4. Calculating forecast errors
@@ -158,22 +159,17 @@ def calculate_errors(Y_hat_test, Y_test, result_set):
 
 
     #calculate the elemnet wise RMSE for the whole prediction set.
+
     actual = Y_test.values
     predicted = Y_hat_test.values
 
+
+    #copy from JasonBrownlee to calcualte RMSE element by element for whole array
     s=0
     for row in range(actual.shape[0]):
         for col in range(actual.shape[1]):
             s += (actual[row, col] - predicted[row, col])**2
-    error_mean = sqrt(s / (actual.shape[0] * actual.shape[1]))
-
-
-
-
-    # #append average mean error of the predictions
-    # error_mean.append([
-    #     np.mean(error_list[0])
-    # ])    
+    error_mean = np.sqrt(s / (actual.shape[0] * actual.shape[1]))  
     
     
     #set an index with the 24 periods
@@ -182,7 +178,7 @@ def calculate_errors(Y_hat_test, Y_test, result_set):
     #store errors in dataframe
     errors = pd.DataFrame(error_list, index=index, columns=columns)
     
-    return errors, error_mean
+    return error_mean, errors
 
 ######################################################################
 
