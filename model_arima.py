@@ -476,9 +476,9 @@ def test_run_sarimax_gridsearch():
     t_mas = [0]
 
     s_lags = [1]
-    s_diffs = [0]
+    s_diffs = [1]
     s_mas = [0]
-    s_ms = [168]
+    s_ms = [24]
 
 
     cfg_list = arima_configs(t_lags, t_diffs, t_mas, s_lags, s_diffs, s_mas, s_ms)

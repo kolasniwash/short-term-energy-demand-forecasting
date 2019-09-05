@@ -125,16 +125,12 @@ def walk_forward_evaluation(model, train, test, model_name, config=(1,0,0)):
         
         #store predictions
         predictions.append(Y_hat)
-        
-        print('history:' len(history))
+
         #get real observation and append to the history for next step in walk forward.
         history.append(test.iloc[i,:])
 
-        print('appended:' len(history))
-
-        history.drop([0])
-
-        print('dropped:' len(history))
+        #drop first item in history and slide the window forward
+        history.drop(history.index[0])
     
 
     #store predictions in a dataframe
