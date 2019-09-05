@@ -367,13 +367,13 @@ def grid_search(model, data, cfg_list, split_date, parallel=True):
     - launches parallel jobs according to number of cpus available
     - one job per model configuration 
     """
-
+    #cpu_count()
     
     scores = []
 
     if parallel:
         # execute configs in parallel
-        executor = Parallel(n_jobs=cpu_count(), verbose=10, backend='multiprocessing')
+        executor = Parallel(n_jobs=6, verbose=10, backend='multiprocessing')
         #set tasks into the buffer
         tasks = (delayed(score_model)(model, data, split_date, cfg) for cfg in cfg_list)
         #execute tasks in order
@@ -447,8 +447,8 @@ def save_all_results(scores):
     
     for m_id, h_error, f in zip(model_cfg, hourly_errors, forecasts):
         #set the name of the model
-        model_id_errors = 'sarimax_errors'+ str(m_id) + "_"+ str(datetime.datetime.now())+'.json'
-        model_id_forecasts = 'sarimax_forecasts'+ str(m_id) + "_"+ str(datetime.datetime.now())+'.json'
+        model_id_errors = 'sarimax_errors'+ str(m_id) + "_"+ str(datetime.datetime.today())+'.json'
+        model_id_forecasts = 'sarimax_forecasts'+ str(m_id) + "_"+ str(datetime.datetime.today())+'.json'
        
     
         #save the hourly errors
@@ -471,14 +471,14 @@ def test_run_sarimax_gridsearch():
 
     model = sarimax_model
 
-    t_lags = [24, 48]
-    t_diffs = [0, 1]
-    t_mas = [0, 1]
+    t_lags = [24]
+    t_diffs = [0]
+    t_mas = [0]
 
     s_lags = [1]
-    s_diffs = [1]
+    s_diffs = [0]
     s_mas = [0]
-    s_ms = [24]
+    s_ms = [168]
 
 
     cfg_list = arima_configs(t_lags, t_diffs, t_mas, s_lags, s_diffs, s_mas, s_ms)
