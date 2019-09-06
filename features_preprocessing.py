@@ -173,13 +173,17 @@ def make_shifted_features(data, shifts_list):
     #cycle through list of shifts i.e. features
     for shift in shifts_list:
         
-        #shift the data by shift value
-        data_shifted = shift_by_days(data, shift)
+        if shift == 0:
+            pass
 
-        #update column identifers
-        data_shifted = rename_cols(data_shifted, shift)
-    
-        periods.append(data_shifted)
+        else:
+            #shift the data by shift value
+            data_shifted = shift_by_days(data, shift)
+
+            #update column identifers
+            data_shifted = rename_cols(data_shifted, shift)
+        
+            periods.append(data_shifted)
         
     #concatenate all shifted datasets into one dataframe.    
     data = pd.concat(periods, axis = 1)
