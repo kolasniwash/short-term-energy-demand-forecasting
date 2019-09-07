@@ -49,12 +49,12 @@ import seaborn as sns
 
 
 import datetime as dt
-from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_absolute_error
 #import helper functions
 from features_preprocessing import transform_to_windows, rename_cols
 
 
-def get_persistence_dataset(path='./data/cleaned_data/energy_loads_2015_2019.csv', index='time', start='2015', stop='2018', shift=0):
+def get_persistence_dataset(path='./data/cleaned_data/energy_loads_2015_2019.csv', index='time', start='2015', stop='2018', shift=0, transformed=False):
     """
     Loads the cleaned dataset, transforms to windows and slices according to the start and stop times.
 
@@ -64,11 +64,16 @@ def get_persistence_dataset(path='./data/cleaned_data/energy_loads_2015_2019.csv
     #load the preprocessed data
     data = pd.read_csv('./data/cleaned_data/energy_loads_2015_2019.csv', parse_dates=True, index_col=index)
 
-    #use features preprocessing library to transform data into day and hour slice format.
-    data = transform_to_windows(data)
+    data.sort_index(inplace=True)
 
-    #rename the columns
-    data = rename_cols(data, shift=shift)
+    #let user choose if they want transformed or original dataset
+    if transformed:
+
+        #use features preprocessing library to transform data into day and hour slice format.
+        data = transform_to_windows(data)
+
+        #rename the columns
+        data = rename_cols(data, shift=shift)
 
     #standardize the data from 2015-2018. datetimeindexes are inclusive
     data = data[start:stop]
@@ -157,7 +162,7 @@ def calculate_errors(Y_hat_test, Y_test, result_set):
     for i in range(Y_hat_test.shape[1]):
         error_list.append([
             #calcualte the RMSE
-            np.sqrt(mean_squared_error(Y_hat_test.iloc[:,i], Y_test.iloc[:,i]))
+            mean_absolute_error(Y_hat_test.iloc[:,i], Y_test.iloc[:,i])
         ])
 
 

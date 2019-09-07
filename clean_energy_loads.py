@@ -131,7 +131,7 @@ def interpolate_nans(data):
     
     #try to convert data to float
     try:
-        data = data.astype(float)
+        data = data.astype(np.float)
     except:
         #for typical nans filled with strings replace with nans.
         for char in ['-', '--', '?']:
