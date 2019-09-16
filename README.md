@@ -1,7 +1,7 @@
 # Short-term-energy-demand-forecasting
 This project is the final project repo for the [AkademyAi](akademy.ai) machine learning course. Investigates various models to predict short-term (24 hour advance) energy demands in the Spanish energy market.
 
-Watch the final project presentation for this repo.
+[Watch the final project presentation](https://youtu.be/KaWCwBD_UBA) for this repo.
 
 #### -- Project Status: [Completed]
 
@@ -38,8 +38,54 @@ Timeseries forecasting models implemented in this project are:
 
 ## Project Description
 
+intro
+
+main questions
 
 
+
+
+### Data sources
+
+### Modelling Short-Term Energy Demand
+
+
+Features input
+- autocorrelated energy consumption
+- hourly weather data
+- day of the week
+- holidays
+
+Output
+- Hourly peak demand for the next 24 hour window
+
+### Supervised learning problem
+
+
+
+#### SARIMA & Prophet
+
+Image here of inputs and output mapping
+
+#### LSTM
+
+Image here of inputs fomulation and output mapping
+
+<img src="img/walk-forward-validation.png" width=600 height=400>
+
+
+### Cross validation descrption
+
+Cross validation (backtesting) was used to verify the results of forecasts. 
+
+
+<img src="img/walk-forward-validation.png" width=600 height=400>
+
+
+
+
+
+Errors in prediction can be costly. Considering a levelized cost of energy of EUR50/MWh and an average difference in forecast to observed consumption of ~200MW. The daily value of the error is EUR 240,000. An improvement in forecasting that reduces error by 2% represents a potential annual cost reduction of EUR 1.5M. Similar examples can also be made for predicting load forecasts from solar, wind, battery storage, and other intermittent energy sources. 
 
 
 
@@ -73,123 +119,39 @@ Timeseries forecasting models implemented in this project are:
 
 ## Run these models yourself
 
-Each model pipeline may be run independently. To replicate results, or build on this project, you can get started by
+Each model pipeline may be run independently. To replicate results, or build on this project, you can get started by:
 
 1. Clone this repo
 2. Raw data used for this project Data is found in CSV format within this repo [here](Repo folder containing raw data) within this repo.
     a. Updated energy data can be downloaded from the [ENTSOE Transparency Platform](https://transparency.entsoe.eu/)
     b. Weather data was obtained from the [OpenWeatherApi](https://openweathermap.org/api) and additional data may be purchased.
 3. Follow the requirements.yml file to install dependencys
+4. Data processing, transformation, and models are found in the main repo.
+5. Executing any of the following files will run the designated model:
+    a. model_sarima.py
+    b. model_prophet.py
+    c. model_lstm.py
+6. Model output is saved in json for the SARIMA and LSTM. Prophet output is saved in csv.
+7. Results folder stores the model outputs under their respective folder names.
 
+## Featured Notebooks & Deliverables
 
+#### Models
+* [SARIMA](link)
+* [Prophet](link)
+* [LSTM](link)
 
+#### Anlysis and Helper Functions
+* [Dataset creation](link)
+* [Data window and transform functions](link)
+* [Feature Analysis Energy and Weather](link)
 
-4. Data processing/transformation scripts are being kept [here](Repo folder containing data processing scripts/notebooks)
-5. etc...
-
-*If your project is well underway and setup is fairly complicated (ie. requires installation of many packages) create another "setup.md" file and link to it here*  
-
-5. Follow setup [instructions](Link to file)
-
-## Featured Notebooks/Analysis/Deliverables
-* [Notebook/Markdown/Slide Deck Title](link)
-* [Notebook/Markdown/Slide DeckTitle](link)
+#### Communications
+* [Presentation Deck](https://github.com/nicholasjhana/short-term-energy-demand-forecasting/blob/master/presentation-short-term-load-forecasting.pdf)
+* [Presentation Video](https://youtu.be/KaWCwBD_UBA)
 * [Blog Post](link)
 
 
-## Contributing DSWG Members
-
-**Team Leads (Contacts) : [Full Name](https://github.com/[github handle])(@slackHandle)**
-
-#### Other Members:
-
-|Name     |  Slack Handle   | 
-|---------|-----------------|
-|[Full Name](https://github.com/[github handle])| @johnDoe        |
-|[Full Name](https://github.com/[github handle]) |     @janeDoe    |
-
 ## Contact
-* If you haven't joined the SF Brigade Slack, [you can do that here](http://c4sf.me/slack).  
-* Our slack channel is `#datasci-projectname`
-* Feel free to contact team leads with any questions or if you are interested in contributing!
 
-
-
-
-
-
-
-
-
-Errors in prediction can be costly. Considering a levelized cost of energy of EUR50/MWh and an average difference in forecast to observed consumption of ~200MW. The daily value of the error is EUR 240,000. An improvement in forecasting that reduces error by 2% represents a potential annual cost reduction of EUR 1.5M. Similar examples can also be made for predicting load forecasts from solar, wind, battery storage, and other intermittent energy sources. 
-
-
-## Task Completed
-
-### 0. Problem Definition
-- [x] Forecast target
-- [x] Data Structure inputs and outputs
-
-### 1. Data Cleaning/Preprocessing
- 
-- [X] Retreve data from public sources
-  - [x] Energy load data: entose Transparency Platform
-  - [x] (optional) Calendar data: Pandas library
-  - [x] (optional) Weather Data: OpenWeatherApi
-- [x] Clean data
-  - [x] Parse dates into datetime
-  - [x] Evaluate quantitiy of nans and impute missing if possible
-  - [x] Elimate duplicated values
-- [x] Process energy load  data into feature vectors
-  - [x] 'Univariate' Day In, and predict Day + 1
-  - [x] 'Multivariate' In: Day, Day-1, Day-2, Day-7, and predict Day + 1
-- [ ] (optional) Process Dates data into dummy variables
-- [ ] (optional) Clean weather data and preprocess into feature vectors with load and date data.
-
-### 2. Dataset Analysis
-- [x] Statistical analysis of processed data in Task set #1
-  - [x] General descrption and investigation of the data's structure.
-  - [x] Is data stationary?
-  - [x] What are distributions of day head forecasts, actual loads, dates
-- [ ] (Auto)Correlation analysis of energy data with target vector.
-  - [ ] Identify autocorrelated time step features for the multivariate case.
-- [ ] Correlation analysis of date and weather data with the target vector.
-  - [ ] Identify correlated date and weather features with high correlation.
-
-### 3. Data Transforms
-- [x] Utility to join csvs into single df, clean, interpolate nans
-- [x] Utility to transform Day>Hour format to Day>Day format (columns hours)
-- [x] Utility to add labels to transformed columns and autoregressive windows
-
-### 4. Multistp Model Building
-- [ ] Baseline Forecast Models
-  - [x] Previous Day By Day
-  - [ ] Year ago day-by-day
-- [ ] Classic Forecast models
-  - [ ] ARIMA Hour-by-hour
-    - [ ] Box Jeknens Method for parameter discovery
-    - [ ] Grid search around parameters
-- [ ] Neural Network (paper model implementation)
-  - [ ] CNN / LSTM / MLP
-- [ ] Error Evaluation
-  - [ ] Error plots
-
-### 5. Model Improvement (Optional Ideas)
-- [ ] Hyperparmeter Tuning
-  - [ ] Learning rate optimization (tensorflow callback method)
-- [ ] Multivariate mutli step models
-  - [ ] Add weather/dates features
-    - [ ] ARIMA (w/ exod vars)
-    - [ ] CNN / LSTM / MLP
-  - [ ] Multi headed model
-- [ ] Feature engineering
-  - [ ] Autoregressive analysis of features.
-  - [ ] Clustering of weather features
-  
-### 6. Possible Pivots
-- [ ] Compare two NN models instead of ARIMA
-- [ ] Compare ARIMA vs SARIMA, ARIMAX, SARIMAX
-- [ ] Skip ARIMA, build multivariate multi step directly (ie. using day and weather data)
-- [ ] Swap energy demand data for Solar data: forecast solar generation
-  - [ ] Option 1 Model comparisons
-  - [ ] Option 2 Use mutliple input variables, one model
+**Project lead: [Nicholas Shaw](https://github.com/nicholasjhana) nicholas at nicholasjhana.com**
