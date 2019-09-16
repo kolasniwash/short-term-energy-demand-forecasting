@@ -110,7 +110,7 @@ def train_test_split(data, split_date='2017-12-31'):
 
 
 
-def walk_forward_evaluation(model, train, test, model_name, config=(1,0,0)):
+def walk_forward_evaluation(model, train, test, train_exog, test_exog, model_name, config=(1,0,0)):
     """
     Walk forward test harness. Adapted from Machine Learning Mastery by Jason Brownlee.
     
@@ -118,25 +118,52 @@ def walk_forward_evaluation(model, train, test, model_name, config=(1,0,0)):
         
     #define the walk forward window. In this case an expanding window for simplicity.
     history = train.copy()
+    history_exog = train_exog
 
     #defne array for the walk forward predicted values (forecasts)
     predictions = []
     
-    #loop through each row in test from i to length of i
-    for i in range(test.shape[0]):
-        
-        #get forecasted values from the model
-        Y_hat = model(history, config)
-        
-        #store predictions
-        predictions.append(Y_hat)
-
-        #get real observation and append to the history for next step in walk forward.
-        history.append(test.iloc[i,:])
-
-        #drop first item in history and slide the window forward
-        history.drop(history.index[0])
+    steps = [i for i in range(test.shape[0]) if i%24 == 0]
     
+    if history_exog is not None:
+
+        #loop through each row in test from i to length of i
+        for i in steps: #range(test.shape[0]):
+
+            #get forecasted values from the model
+            Y_hat = model(history, history_exog, test_exog.iloc[i:i+24,:], config)
+
+            #store predictions
+            predictions.append(Y_hat)
+
+            #get real observation and append to the history for next step in walk forward.
+            history.append(test.iloc[i:i+24,:])
+            history_exog.append(test_exog.iloc[i:i+24,:])
+
+            #drop first item in history and slide the window forward
+            history.drop(history.index[0:24])
+            history_exog.drop(history_exog.index[0:24])
+    else:
+         #loop through each row in test from i to length of i
+        for i in steps: #range(test.shape[0]):
+
+            #get forecasted values from the model
+            Y_hat = model(history, history_exog, test_exog, config)
+
+            #store predictions
+            predictions.append(Y_hat)
+
+            #get real observation and append to the history for next step in walk forward.
+            history.append(test.iloc[i:i+24,:])
+            #history_exog.append(test_exog.iloc[i:i+24,:])
+
+            #drop first item in history and slide the window forward
+            history.drop(history.index[0:24])
+            #history_exog.drop(history_exog.index[0:24])
+        
+
+         
+            
 
     #store predictions in a dataframe
     predictions = pd.DataFrame(predictions, index = test.index, columns = test.columns)
