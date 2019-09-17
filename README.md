@@ -8,6 +8,9 @@ This project is the final project repo for the [AkademyAi](akademy.ai) machine l
 ## Problem Definition and Motivation
 This project is inspired by the paper [Tackling Climate Change with Machine Learning](https://arxiv.org/abs/1906.05433) where forecasting is identified as one of the highest impact research areas to contributing to more renewable energy in the grid. Further, it explores the results from [here](https://www.researchgate.net/publication/330155110_Short-Term_Load_Forecasting_in_Smart_Grids_An_Intelligent_Modular_Approach) where the authors argue that traditional statistical forecasting is more computationally efficient compared to state of the art approaches. Finally, the last model draws from the data structure, and problem setup in the [following paper](https://www.researchgate.net/publication/323847484_Statistical_and_Machine_Learning_forecasting_methods_Concerns_and_ways_forward) to implement a state of the art Long Short Term Network forecast.
 
+Energy demand forecasting is highly relevant to an effiecnt electrical grid. Improved forecasting is beneficial to deployment of renewable energy, planning for high/low load days, and reducing wastage from polluting on reseve standby generation (typically inefficent gas or coal fired powerplants).
+
+
 ##### Project objectives
 1. Implement classical statistical forecasting models
 2. Implement state of the art neural network forecasting models
@@ -15,11 +18,6 @@ This project is inspired by the paper [Tackling Climate Change with Machine Lear
 
 ##### Problem summary
 The specific problem addressed is to use past energy consumption data, day of the week, holidays, and weather data to once daily predict the next 24 hours of energy demand. This is a highly relevant problem carried out everyday by electrical grid Transmission Service Operators (TSOs) across the world. In order to appropriately meet energy demands TSOs issue energy demand forecasts once a day for the coming 24 hour period. The expected maxium energy demand is forecasted on an hourly basis and consists of 24 hourly slices. These forecasts are used in the planning of supply dispatch, for day-ahead bidding processes, and combined with ultrashort term (6 hours or less) forecasts that maintain balance in the grid. 
-
-Timeseries forecasting models implemented in this project are:
-1. SARIMA - Seasonal Autoregressive Integrated Moving Average
-2. Prophet General Additive Model by Facebook
-3. Long-Short Term Memory Nerual Network
 
 
 ### Methods Used
@@ -35,21 +33,21 @@ Timeseries forecasting models implemented in this project are:
 * Python
 * Keras, Tensorflow
 * Pandas, Numpy, Jupyter
-* Statsmodels
+* Statsmodels, Scikit-Learn
 * Prophet
 * Joblib, holidays libraries
 * Google Cloud Platform
 
 ## Project Description
+This project compared forecasting capabilities of classical statistical models versus modern neural network implementations on a realistic task of short-term energy demand forecasting. The main question the projec asks is:
 
-This project 
-
-intro
-
-main questions
+***What forecasting model and supervised learning problem formulation gives the lowest MAE given limited computation power constraints***
 
 
-
+Timeseries forecasting models implemented in addressing this question are:
+1. SARIMA - Seasonal Autoregressive Integrated Moving Average
+2. Prophet General Additive Model by Facebook
+3. Long-Short Term Memory Nerual Network
 
 ### Data sources
 Energy data was obtained from the [ENTSOE Transparency Platform](https://transparency.entsoe.eu/). The platform provides electrical demand, generation, and price information for all european countries since 2015. Data is available at hourly and daily timeframes. 
@@ -88,10 +86,16 @@ Two variants of this lagging was implemented. The SARIMA and Prophet models used
 
 
 #### SARIMA & Prophet
+The SARIMA and Prophet models construct the previous time steps by shifting the sequence of energy and weather data one hour at a time and output a sequence of 24 values corresponding with the next day's demand. The table below describes the learning problem's structure.
 
-Image here of inputs and output mapping
+|Input Lagged Features||||||Outputs|
+|-|-|-|-|-|-|-|
+|30 Days prior | ... | 7 days prior |2 days prior | Previous day |>>> MODEL >>> | Forecast|
+|h0...h24 | ... |h0...h24 | h0...h24 | h0...h24 | >>> MODEL >>> | h0 ... h24|
 
-<img src="img/sarima-prophet-data-input.png" width=600 height=400 align="middle">
+When combined together with may samples the structure of the problem takes on the following shape. Feature vectors are created by lagging the original sequence at different intervals. These vectors are stacked on top of one another by alinging similar lags. One 2D matrix of lagged features consitutes the data needed for a single day's forecast (one sample). The output as seen in the figure below is a row vector of the 24 hourly predictions.
+
+<img src="img/sarima-prophet-data-input.png" width=800 height=400 align="middle">
 
 
 #### LSTM
@@ -99,15 +103,17 @@ The LSTM problem framing was different from the SARIMA and Prophet. The feature 
 
 |I/O| date | h00 | h01 | ... | h23 |
 |-|------|----|----|-----|-----|
+|Lag features| 2015-12-01 | 21331.0 | 20622.0 | ... | 25101.0 |
+|| ... | ... | ... | ... | ... |
 |Lag features| 2016-01-01 | 22431.0 | 21632.0 | ... | 24000.0 |
 |||⌄⌄⌄⌄⌄|⌄⌄⌄⌄⌄|⌄⌄⌄⌄⌄|⌄⌄⌄⌄⌄|
 ||LSTM-h0|LSTM-h1|...|LSTM-h23|
 || |⌄⌄⌄⌄⌄|⌄⌄⌄⌄⌄|⌄⌄⌄⌄⌄|⌄⌄⌄⌄⌄|
-|Forecast| 2016-01-01 | 22113.0 | 20515.0 | ... | 26029.0 |
+|Forecast| 2016-01-02 | 22113.0 | 20515.0 | ... | 26029.0 |
 
 To formulte this problem using the same data processing as in the SARIMA and Prophet models you would arive at a single data structure per hourly output. In the graphic we see each hourly output has its own 3D input comprised of the lags (previous timestep data), features (energy, weather, day of week), and the sample day of forecast.
 
-<img src="img/lstm-data-transform.png" width=600 height=400 align="middle">
+<img src="img/lstm-data-transform.png" width=800 height=400 align="middle">
 
 The result is computationally intensive for SARIMA and Prophet as you would need to implemente 24 models to solve the supervised learning problem. This implementation is also not feasible in terms of dimensionality with a neural network (LSTM doesn't accept 4D data).
 
@@ -118,23 +124,12 @@ The solution, as outlined in [one of the motivating papers](https://www.research
 
 ### Cross validation descrption
 
-Cross validation (backtesting) was used to verify the results of forecasts. 
+Walk forward validation is a standard backtesting methodology when working with timeseries data. The method allows for the validation of test results and reduces overfitting to a small sample of data. The following graphic shows how the whole data set is broken into training and test segments. Once the model has been tested, the previous test segment is introduced into the training data and the model is retrained. Finally the model is tested again on the expanded dataset.
+
+<img src="img/walk-forward-validation.png" width=800 height=400 align="middle">
 
 
-<img src="img/walk-forward-validation.png" width=600 height=400 align="middle">
-
-
-
-
-
-Errors in prediction can be costly. Considering a levelized cost of energy of EUR50/MWh and an average difference in forecast to observed consumption of ~200MW. The daily value of the error is EUR 240,000. An improvement in forecasting that reduces error by 2% represents a potential annual cost reduction of EUR 1.5M. Similar examples can also be made for predicting load forecasts from solar, wind, battery storage, and other intermittent energy sources. 
-
-
-
-
-(Provide more detailed overview of the project.  Talk a bit about your data sources and what questions and hypothesis you are exploring. What specific data analysis/visualization and modelling work are you using to solve the problem? What blockers and challenges are you facing?  Feel free to number or bullet point things here)
-
-
+In this project the goal was to have a stadnard training window of 1 year, and a test window of 3 months. Within the training and test sets, a prediction was made once per calendar day. In practice however, this was too computatinoally intensive for the SARIMA, and prophet models given the resources of the project (2 weeks). The intervals were therefore reduced. 
 
 
 ## Project needs and core tasks
@@ -179,14 +174,13 @@ Each model pipeline may be run independently. To replicate results, or build on 
 ## Featured Notebooks & Deliverables
 
 #### Models
-* [SARIMA](link)
-* [Prophet](link)
-* [LSTM](link)
+* [SARIMA](https://github.com/nicholasjhana/short-term-energy-demand-forecasting/blob/master/model_arima.ipynb)
+* [Prophet](https://github.com/nicholasjhana/short-term-energy-demand-forecasting/blob/master/model_prophet.ipynb)
+* [LSTM](https://github.com/nicholasjhana/short-term-energy-demand-forecasting/blob/master/model_lstm.ipynb)
 
 #### Anlysis and Helper Functions
-* [Dataset creation](link)
-* [Data window and transform functions](link)
-* [Feature Analysis Energy and Weather](link)
+* [Feature Analysis Energy and Weather](https://github.com/nicholasjhana/short-term-energy-demand-forecasting/blob/master/data_analysis.ipynb)
+* [Data window and transform functions](https://github.com/nicholasjhana/short-term-energy-demand-forecasting/blob/master/data_features_preprocessing.ipynb)
 
 #### Communications
 * [Presentation Deck](https://github.com/nicholasjhana/short-term-energy-demand-forecasting/blob/master/presentation-short-term-load-forecasting.pdf)
