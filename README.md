@@ -1,4 +1,4 @@
-# Short-term-energy-demand-forecasting
+# Short-term Energy Demand Forecasting
 This project is the final project repo for the [AkademyAi](akademy.ai) machine learning course. Investigates various models to predict short-term (24 hour advance) energy demands in the Spanish energy market.
 
 [Watch the final project presentation](https://youtu.be/KaWCwBD_UBA) for this repo.
