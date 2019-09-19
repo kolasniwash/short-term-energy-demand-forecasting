@@ -41,7 +41,7 @@ The specific problem addressed is to use past energy consumption data, day of th
 ## Project Description
 This project compared forecasting capabilities of classical statistical models versus modern neural network implementations on a realistic task of short-term energy demand forecasting. The main question the projec asks is:
 
-***What forecasting model and supervised learning problem formulation gives the lowest MAE given limited computation power constraints***
+***What forecasting model and supervised learning problem formulation gives the lowest MAE given constrained computation power***
 
 
 Timeseries forecasting models implemented in addressing this question are:

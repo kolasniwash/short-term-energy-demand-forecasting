@@ -113,11 +113,9 @@ def train_test_split(data, split_date='2017-12-31'):
 
 
 
-<<<<<<< HEAD
+
 def walk_forward_evaluation(model, train, test, train_exog, test_exog, model_name, config=(1,0,0)):
-=======
-def walk_forward_evaluation(model, train, test, exog, model_name, config=(1,0,0)):
->>>>>>> model_prophet
+
     """
     Walk forward test harness. Adapted from Machine Learning Mastery by Jason Brownlee.
     
@@ -130,20 +128,10 @@ def walk_forward_evaluation(model, train, test, exog, model_name, config=(1,0,0)
     #defne array for the walk forward predicted values (forecasts)
     predictions = []
     
-<<<<<<< HEAD
+
     steps = [i for i in range(test.shape[0]) if i%24 == 0]
     
     if history_exog is not None:
-=======
-    #loop through each row in test from i to length of i
-    for i in range(test.shape[0]):
-        
-        #get forecasted values from the model
-        Y_hat = model(history, exog, config)
-        
-        #store predictions
-        predictions.append(Y_hat)
->>>>>>> model_prophet
 
         #loop through each row in test from i to length of i
         for i in steps: #range(test.shape[0]):
