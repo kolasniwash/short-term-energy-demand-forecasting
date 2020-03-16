@@ -190,4 +190,4 @@ Each model pipeline may be run independently. To replicate results, or build on 
 
 ## Contact
 
-**Project lead: [Nicholas Shaw](https://github.com/nicholasjhana) nicholas at nicholasjhana.com**
+**Project lead: [Nicholas](https://github.com/nicholasjhana) nicholas at nicholasjhana.com**
